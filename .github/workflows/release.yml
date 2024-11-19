@@ -23,9 +23,18 @@ jobs:
                   export TAG="$(echo ${DATE}-${LATEST_REF})"
                   echo $TAG
                   echo "TAG=$TAG" >> $GITHUB_ENV
+                  echo "LATEST_REF=$LATEST_REF" >> $GITHUB_ENV
                   echo "tag=${TAG}" >> $GITHUB_OUTPUT
             - name: Echo TAG
               run: echo $TAG
+            - name: Check if build is needed
+              run: |
+                  # Search for the latest release in this repository: if the name ends with $LATEST_REF, then we don't need to build.
+                  latest_release=$(curl -s https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r '.name')
+                  if [[ $latest_release == *"${LATEST_REF}"* ]]; then
+                    echo "No need to build, the latest release is $latest_release"
+                    exit 1
+                  fi
     fetch-grammars:
         name: Fetch Grammars
         runs-on: ubuntu-latest
@@ -82,11 +91,13 @@ jobs:
                       rust: stable
                       target: aarch64-unknown-linux-gnu
                       cross: true
+                      skip_tests: true
                     - build: x86_64-windows
                       os: windows-latest
                       rust: stable
                       target: x86_64-pc-windows-msvc
                       cross: false
+                      skip_tests: true
 
         steps:
             - name: Checkout sources
@@ -143,6 +154,11 @@ jobs:
                   [profile.release]
                   strip = true
                   EOF
+
+            - name: Set version number
+              shell: bash
+              run: |
+                  sed -i "s/^version = .*/version = \"${{ needs.set-env-vars.outputs.tag }}\"/" Cargo.toml
 
             - name: Build release binary
               run: ${{ env.CARGO }} build --release --locked --target ${{ matrix.target }}
