@@ -188,6 +188,10 @@ jobs:
         name: Publish
         needs: [set-env-vars, dist]
         runs-on: ubuntu-latest
+        permissions:
+            contents: write
+            packages: write
+            issues: write
         steps:
             - name: Checkout sources
               uses: actions/checkout@v4
