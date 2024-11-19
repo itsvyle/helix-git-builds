@@ -69,7 +69,7 @@ jobs:
         strategy:
             fail-fast: false # don't fail other jobs if one fails
             matrix:
-                build: [x86_64-linux, x86_64-windows] #, x86_64-win-gnu, win32-msvc
+                build: [x86_64-linux, aarch64-linux, x86_64-windows] #, x86_64-win-gnu, win32-msvc
                 include:
                     - build: x86_64-linux
                       os: ubuntu-latest
@@ -77,16 +77,16 @@ jobs:
                       target: x86_64-unknown-linux-gnu
                       cross: false
                       skip_tests: true
-                    # - build: aarch64-linux
-                    #   os: ubuntu-latest
-                    #   rust: stable
-                    #   target: aarch64-unknown-linux-gnu
-                    #   cross: true
-                    # - build: x86_64-windows
-                    #   os: windows-latest
-                    #   rust: stable
-                    #   target: x86_64-pc-windows-msvc
-                    #   cross: false
+                    - build: aarch64-linux
+                      os: ubuntu-latest
+                      rust: stable
+                      target: aarch64-unknown-linux-gnu
+                      cross: true
+                    - build: x86_64-windows
+                      os: windows-latest
+                      rust: stable
+                      target: x86_64-pc-windows-msvc
+                      cross: false
 
         steps:
             - name: Checkout sources
