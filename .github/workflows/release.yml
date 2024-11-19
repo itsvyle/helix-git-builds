@@ -22,7 +22,7 @@ jobs:
                   LATEST_REF=$(git rev-parse --short HEAD)
                   TAG="$(echo $DATE-$LATEST_REF)"
                   echo "$TAG" >> $GITHUB_ENV
-                  echo "tag=${TAG}" >> $GITHUB_OUTPUT
+                  echo "tag=\"${TAG}\"" >> $GITHUB_OUTPUT
             - name: Echo TAG
               run: echo $TAG
     fetch-grammars:
