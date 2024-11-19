@@ -7,6 +7,8 @@ on:
 jobs:
     set-env-vars:
         runs-on: ubuntu-latest
+        outputs:
+            TAG: ${{ steps.generate-tag.outputs.TAG }}
         steps:
             - name: Checkout sources
               uses: actions/checkout@v4
@@ -15,7 +17,12 @@ jobs:
             - name: Get date
               run: echo "DATE=$(date +'%Y.%m.%d')" > $GITHUB_ENV
             - name: Generate Tag
-              run: echo "TAG=$(echo $DATE-$(git rev-parse --short HEAD))" >> $GITHUB_ENV
+              id: generate-tag
+              run: |
+                  LATEST_REF=$(git rev-parse --short HEAD)
+                  TAG="$(echo $DATE-$LATEST_REF)"
+                  echo "$TAG" >> $GITHUB_ENV
+                  echo "tag=${TAG}" >> $GITHUB_OUTPUT
             - name: Echo TAG
               run: echo $TAG
     fetch-grammars:
@@ -46,7 +53,7 @@ jobs:
 
     dist:
         name: Dist
-        needs: [fetch-grammars]
+        needs: [set-env-vars, fetch-grammars]
         env:
             # For some builds, we use cross to test on 32-bit and big-endian
             # systems.
@@ -174,7 +181,7 @@ jobs:
 
     publish:
         name: Publish
-        needs: [dist]
+        needs: [set-env-vars, dist]
         runs-on: ubuntu-latest
         steps:
             - name: Checkout sources
@@ -203,7 +210,7 @@ jobs:
                       if [[ $platform =~ "windows" ]]; then
                           exe=".exe"
                       fi
-                      pkgname=helix-$TAG-$platform
+                      pkgname=helix-${{ needs.set-env-vars.outputs.tag }}-$platform
                       mkdir -p $pkgname
                       cp $source/LICENSE $source/README.md $pkgname
                       mkdir $pkgname/contrib
@@ -223,7 +230,7 @@ jobs:
                       fi
                   done
 
-                  tar cJf dist/helix-$TAG-source.tar.xz -C $source .
+                  tar cJf dist/helix-${{ needs.set-env-vars.outputs.tag }}-source.tar.xz -C $source .
                   mv dist $source/
 
             - name: Upload binaries to release
@@ -231,7 +238,7 @@ jobs:
               with:
                   file: dist/*
                   file_glob: true
-                  tag: ${{ env.TAG }}
+                  tag: ${{ needs.set-env-vars.outputs.tag }}
                   overwrite: true
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
