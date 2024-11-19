@@ -31,6 +31,7 @@ jobs:
               run: |
                   # Search for the latest release in this repository: if the name ends with $LATEST_REF, then we don't need to build.
                   latest_release=$(curl -s https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r '.name')
+                  echo "Latest git built release is $latest_release"
                   if [[ $latest_release == *"${LATEST_REF}"* ]]; then
                     echo "No need to build, the latest release is $latest_release"
                     exit 1
