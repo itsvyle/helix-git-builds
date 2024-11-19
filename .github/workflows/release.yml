@@ -237,6 +237,7 @@ jobs:
             - name: Upload binaries to release
               uses: svenstaro/upload-release-action@v2
               with:
+                  release_name: ${{ needs.set-env-vars.outputs.tag }}
                   file: dist/*
                   file_glob: true
                   tag: ${{ needs.set-env-vars.outputs.tag }}
