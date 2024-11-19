@@ -231,9 +231,6 @@ jobs:
                       fi
                   done
 
-                  tar cJf dist/helix-${{ needs.set-env-vars.outputs.tag }}-source.tar.xz -C $source .
-                  mv dist $source/
-
             - name: Upload binaries to release
               uses: svenstaro/upload-release-action@v2
               with:
