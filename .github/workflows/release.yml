@@ -13,7 +13,7 @@ jobs:
               with:
                   repository: "helix-editor/helix"
             - name: Get date
-              run: echo "DATE={$(date +'%Y.%m.%d')}" > $GITHUB_ENV
+              run: echo "DATE=$(date +'%Y.%m.%d')" > $GITHUB_ENV
             - name: Generate Tag
               run: echo "TAG=$(echo $DATE-$(git rev-parse --short HEAD))" >> $GITHUB_ENV
             - name: Echo TAG
