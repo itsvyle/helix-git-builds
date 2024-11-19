@@ -115,6 +115,12 @@ jobs:
                   mkdir -p runtime/grammars/sources
                   tar xJf grammars/grammars.tar.xz -C runtime/grammars/sources
 
+            - name: Set version number
+              shell: bash
+              run: |
+                  sed -i "s/^versione = .*/version = \"${{ needs.set-env-vars.outputs.tag }}\"/" Cargo.toml
+                  echo "New cargo version is: $(grep version Cargo.toml)"
+
             # The rust-toolchain action ignores rust-toolchain.toml files.
             # Removing this before building with cargo ensures that the rust-toolchain
             # is considered the same between installation and usage.
@@ -155,12 +161,6 @@ jobs:
                   [profile.release]
                   strip = true
                   EOF
-
-            # - name: Set version number
-            #   shell: bash
-            #   run: |
-            #       sed -i "s/^version = .*/version = \"${{ needs.set-env-vars.outputs.tag }}\"/" Cargo.toml
-            #       echo "New cargo version is: $(grep version Cargo.toml)"
 
             - name: Build release binary
               run: ${{ env.CARGO }} build --release --locked --target ${{ matrix.target }}
