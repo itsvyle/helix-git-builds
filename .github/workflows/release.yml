@@ -8,7 +8,7 @@ jobs:
     set-env-vars:
         runs-on: ubuntu-latest
         outputs:
-            TAG: ${{ steps.generate-tag.outputs.TAG }}
+            TAG: ${{ steps.generate-tag.outputs.tag }}
         steps:
             - name: Checkout sources
               uses: actions/checkout@v4
@@ -20,7 +20,7 @@ jobs:
               id: generate-tag
               run: |
                   export LATEST_REF=$(git rev-parse --short HEAD)
-                  export TAG="$(echo $DATE_$LATEST_REF)"
+                  export TAG="$(echo ${DATE}_${LATEST_REF})"
                   echo $TAG
                   echo "$TAG" >> $GITHUB_ENV
                   echo "tag=${TAG}" >> $GITHUB_OUTPUT
