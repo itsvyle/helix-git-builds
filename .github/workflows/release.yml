@@ -156,10 +156,11 @@ jobs:
                   strip = true
                   EOF
 
-            - name: Set version number
-              shell: bash
-              run: |
-                  sed -i "s/^version = .*/version = \"${{ needs.set-env-vars.outputs.tag }}\"/" Cargo.toml
+            # - name: Set version number
+            #   shell: bash
+            #   run: |
+            #       sed -i "s/^version = .*/version = \"${{ needs.set-env-vars.outputs.tag }}\"/" Cargo.toml
+            #       echo "New cargo version is: $(grep version Cargo.toml)"
 
             - name: Build release binary
               run: ${{ env.CARGO }} build --release --locked --target ${{ matrix.target }}
