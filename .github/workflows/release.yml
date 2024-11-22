@@ -9,7 +9,7 @@ jobs:
         runs-on: ubuntu-latest
         outputs:
             TAG: ${{ steps.generate-tag.outputs.tag }}
-            BUILD_NEEDED: ${{ steps.build-needed.outputs.tag }}
+            BUILD_NEEDED: ${{ steps.build-needed.outputs.BUILD_NEEDED }}
         steps:
             - name: Checkout sources
               uses: actions/checkout@v4
