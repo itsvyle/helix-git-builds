@@ -100,12 +100,12 @@ jobs:
                       target: aarch64-unknown-linux-gnu
                       cross: true
                       skip_tests: true
-                    - build: x86_64-windows
-                      os: windows-latest
-                      rust: stable
-                      target: x86_64-pc-windows-msvc
-                      cross: false
-                      skip_tests: true
+                    #- build: x86_64-windows
+                    # os: windows-latest
+                    #  rust: stable
+                    #  target: x86_64-pc-windows-msvc
+                    #  cross: false
+                    #  skip_tests: true
 
         steps:
             - name: Checkout sources
